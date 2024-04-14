@@ -64,7 +64,6 @@ _flutter.loader = null;
     }
     loadServiceWorker(settings) {
       if (settings == null) {
-        // In the future, settings = null -> uninstall service worker?
         console.debug("Null serviceWorker configuration. Skipping.");
         return Promise.resolve();
       }
@@ -99,13 +98,9 @@ _flutter.loader = null;
     }
     async _getNewServiceWorker(serviceWorkerRegistration, serviceWorkerVersion) {
       if (!serviceWorkerRegistration.active && (serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting)) {
-        // No active web worker and we have installed or are installing
-        // one for the first time. Simply wait for it to activate.
         console.debug("Installing/Activating first service worker.");
         return serviceWorkerRegistration.installing || serviceWorkerRegistration.waiting;
       } else if (!serviceWorkerRegistration.active.scriptURL.endsWith(serviceWorkerVersion)) {
-        // When the app updates the serviceWorkerVersion changes, so we
-        // need to ask the service worker to update.
         const newRegistration = await serviceWorkerRegistration.update();
         console.debug("Updating service worker.");
         return newRegistration.installing || newRegistration.waiting || newRegistration.active;
